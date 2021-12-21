@@ -1,14 +1,18 @@
-FROM python:3.9-alpine
+FROM python:alpine
 
-# Setup dependencies
-# Install dehydrated (letsencrypt client) & dns-lexicon
-RUN apk add --no-cache bash bind-tools curl git openssl \
-      gcc musl-dev python3-dev libffi-dev openssl-dev cargo \
- && git clone --depth 1 https://github.com/lukas2511/dehydrated.git /srv/dehydrated \
- && pip install --no-cache-dir dns-lexicon \
- && apk del git gcc musl-dev python3-dev libffi-dev openssl-dev cargo
+ADD dehydrated /etc/periodic/daily/dehydrated
+RUN apk add --update curl openssl bash git && \
+    cd / && \
+    git clone https://github.com/dehydrated-io/dehydrated && \
+    cd dehydrated && \
+    mkdir hooks && \
+    git clone https://github.com/walcony/letsencrypt-cloudflare-hook hooks/cloudflare && \
+    pip install -r hooks/cloudflare/requirements.txt && \
+    apk del git && \
+    rm -rf /var/cache/apk/* /tmp/* /var/tmp/ && \
+    chmod +x /etc/periodic/daily/dehydrated && \
+    touch /dehydrated/domains.txt
 
-COPY dehydrated.hook.sh /srv/dehydrated/
+CMD /etc/periodic/daily/dehydrated && crond -f
 
-ENTRYPOINT ["srv/dehydrated/dehydrated"]
-CMD ["--cron", "--accept-terms", "--hook", "/srv/dehydrated/dehydrated.hook.sh", "--challenge", "dns-01"]
+VOLUME /dehydrated/certs
