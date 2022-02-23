@@ -165,7 +165,7 @@ def deploy_cert(args):
     shutil.copy(chain_pem, _create_path(chain_pem, "csr"))
 
     docker_socket = os.environ.get("DOCKER_SOCKET", "/tmp/docker.sock").replace("/", "%2F")
-    reload_container_name = os.environ["RELOAD_CONTAINER_NAME", "nginx-proxy"]
+    reload_container_name = os.environ.get("RELOAD_CONTAINER_NAME", "nginx-proxy")
 
     session = requests_unixsocket.Session()
     session.post(f'http+unix://{docker_socket}/containers/{reload_container_name}/kill?signal=SIGHUP')
