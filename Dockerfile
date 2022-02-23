@@ -3,7 +3,11 @@ FROM python:alpine
 ADD dehydrated /etc/periodic/daily/dehydrated
 RUN apk add --update curl openssl bash git && \
     cd / && \
-    git clone https://github.com/dehydrated-io/dehydrated && \
+    git clone https://github.com/dehydrated-io/dehydrated
+
+ADD cloudflare /dehydrated/hooks/cloudflare
+
+RUN cd / && \ 
     cd dehydrated && \
     pip install -r hooks/cloudflare/requirements.txt && \
     apk del git && \
