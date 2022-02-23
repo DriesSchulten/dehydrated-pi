@@ -5,8 +5,6 @@ RUN apk add --update curl openssl bash git && \
     cd / && \
     git clone https://github.com/dehydrated-io/dehydrated && \
     cd dehydrated && \
-    mkdir hooks && \
-    git clone https://github.com/walcony/letsencrypt-cloudflare-hook hooks/cloudflare && \
     pip install -r hooks/cloudflare/requirements.txt && \
     apk del git && \
     rm -rf /var/cache/apk/* /tmp/* /var/tmp/ && \
@@ -15,4 +13,4 @@ RUN apk add --update curl openssl bash git && \
 
 CMD /etc/periodic/daily/dehydrated && crond -f
 
-VOLUME /dehydrated/certs
+VOLUME /dehydrated/certs  

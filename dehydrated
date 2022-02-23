@@ -10,10 +10,6 @@ else
   ./dehydrated -c -d $CF_HOST -t dns-01 -k 'hooks/cloudflare/hook.py'
 fi
 
-cp certs/star_schulten_network/chain.pem certs/schulten.network.csr
-cp certs/star_schulten_network/fullchain.pem certs/schulten.network.crt
-cp certs/star_schulten_network/privkey.pem certs/schulten.network.key
-
 chown -R nobody:nogroup certs
 chmod -R ugo+r certs
 find certs -type d -exec chmod ugo+x {} \;
